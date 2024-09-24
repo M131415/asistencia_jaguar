@@ -1,4 +1,4 @@
-import 'package:asistencia_jaguar/features/auth/presentation/widgets/text_input.dart';
+import 'package:asistencia_jaguar/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,7 +24,7 @@ class SignUpScreen extends StatelessWidget {
               children: [
                 _header(context),
                 _name(),
-                _emailAddress(),
+                _email(),
                 const SizedBox(height: 10,),
                 _password(),
                 _comfirmPassword(),
@@ -47,7 +47,7 @@ class SignUpScreen extends StatelessWidget {
       height: 150,
       child: Center(
         child: Text(
-          'Convierte en un \n Docente Jaguar 🐆',
+          'Conviertete en un \n Docente Jaguar 🐆',
           style: Theme.of(context).textTheme.headlineLarge,
           textAlign: TextAlign.center,
         ),
@@ -55,7 +55,7 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Widget _emailAddress() {
+  Widget _email() {
     return TextInput(
       icon: Icons.email, 
       title: 'Correo Electrónico', 

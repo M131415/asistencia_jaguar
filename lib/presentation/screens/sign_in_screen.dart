@@ -1,12 +1,11 @@
-import 'package:asistencia_jaguar/features/auth/presentation/widgets/text_input.dart';
+import 'package:asistencia_jaguar/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
 
-  final _emailController = TextEditingController();
-
+  final _emailController    = TextEditingController();
   final _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -22,7 +21,7 @@ class SignInScreen extends StatelessWidget {
             child: Column(
               children: [
                 _header(context),
-                _emailAddress(),
+                _email(),
                 const SizedBox(height: 10,),
                 _password(),
                 const SizedBox(height: 50,),
@@ -52,7 +51,7 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  Widget _emailAddress() {
+  Widget _email() {
     return TextInput(
       icon: Icons.email, 
       title: 'Correo Electrónico', 
