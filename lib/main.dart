@@ -1,24 +1,30 @@
-import 'package:asistencia_jaguar/config/routes/my_router.dart';
-import 'package:asistencia_jaguar/config/themes/theme_ligth.dart';
-import 'package:asistencia_jaguar/simple_bloc_observable.dart';
+import 'package:asistencia_jaguar/config/config.dart';
+import 'package:asistencia_jaguar/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  Bloc.observer = SimpleBlocObserver();
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    )
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return  MaterialApp.router(
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final appRouter = ref.watch(appRouterProvider);
+    final isDarkMode = ref.watch(darkModeProvider);
+
+    return  MaterialApp.router (
         debugShowCheckedModeBanner: false,
         title: 'Asistencia Jaguar',
-        theme: AppTheme( isDarkmode: false).getTheme(),
-        routerConfig: myRouter(),
+        theme: AppTheme( isDarkmode: isDarkMode).getTheme(),
+        routerConfig: appRouter,
       );
   }
 }

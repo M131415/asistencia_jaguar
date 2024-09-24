@@ -1,16 +1,12 @@
 # asistencia_jaguar
 
-A new Flutter project.
+Una aplicacion para gestionar la toma de asistencia en universidades
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Esta aplicación sigue el Patrón de Domain Driven Design en la estructura de las carpetas
 
-A few resources to get you started if this is your first Flutter project:
+Como gestor de estado voy a utilizar Riverpod con generación de código
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+-- Durante el desarrollo para la generación de codigo de Riverpod es importante ejecutar el siguiente comando 
+    <code> dart run build_runner watch </code>

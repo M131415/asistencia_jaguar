@@ -5,4 +5,4 @@ export 'helpers/connection/network_info.dart';
 // routes
 export 'routes/my_router.dart';
 // themes
-export 'themes/theme_ligth.dart';
+export 'themes/app_theme.dart';
