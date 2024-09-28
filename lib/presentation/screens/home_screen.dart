@@ -17,19 +17,15 @@ class HomeScreen extends ConsumerWidget {
         title: Text('Attendace App', style: Theme.of(context).textTheme.headlineSmall,),
         actions: [
           IconButton(
-            onPressed: () {
-              ref.read(darkModeProvider.notifier).toggleDarkmode();
-            }, 
-            icon: Icon(
-              isDarkMode ? Icons.light_mode : Icons.dark_mode
-            )
+            onPressed: () { ref.read(darkModeProvider.notifier).toggleDarkmode(); }, 
+            icon: Icon( isDarkMode ? Icons.light_mode : Icons.dark_mode )
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.people),
         onPressed: () {
-          ref.read(appRouterProvider).goNamed('addGroup');
+          ref.read(appRouterProvider).goNamed('groups');
         },
       ),
       body: Container(

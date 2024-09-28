@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-const seedColor = Color.fromARGB(255, 17, 7, 80);
-
+const seedColor = Color.fromARGB(255, 26, 229, 80);
 
 class AppTheme {
 
@@ -17,6 +16,9 @@ class AppTheme {
     listTileTheme: const ListTileThemeData(
       iconColor: seedColor,
     ),
+    scaffoldBackgroundColor: isDarkmode 
+      ? const Color.fromARGB(255, 0, 59, 108) 
+      : const Color.fromARGB(255, 236, 236, 236),
     
   );
 
