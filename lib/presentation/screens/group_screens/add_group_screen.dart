@@ -1,15 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:asistencia_jaguar/domain/entities/student_entity.dart';
+import 'package:asistencia_jaguar/domain/entities.dart';
 import 'package:asistencia_jaguar/presentation/providers/providers.dart';
+import 'package:asistencia_jaguar/presentation/providers/student_list_p/student_list.dart';
 import 'package:asistencia_jaguar/widgets/custom_show_add_dialog.dart';
-import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:asistencia_jaguar/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum DayOfWeek {monday, tuesday, wendsday, thursday, friday, saturday, sunday}
+import '../../../config/config.dart';
 
 class AddGroupScreen extends StatelessWidget {
   const AddGroupScreen({super.key});
@@ -34,26 +31,38 @@ class StepView extends ConsumerStatefulWidget {
 
 class StepViewState extends ConsumerState<StepView> {
 
-  late List<StudentEntity> _data = [];
-  String? filePath;
-
   @override
   Widget build(BuildContext context) {
 
-    final subjectList = ref.watch(subjectListProvider);
-    final subjectChange = ref.read(subjectListProvider.notifier);
+    final toggleButtonsSelection = ref.watch(toggleScheduleProvider);
+    final onToggleSchedule = ref.read(toggleScheduleProvider.notifier);
 
     final currentStep = ref.watch(currentStepProvider);
-    final stepOnChance = ref.read(currentStepProvider.notifier);
+    final onStepChange = ref.read(currentStepProvider.notifier);
 
+    final subjectList = ref.watch(subjectListProvider);
+    final onSubjectChange = ref.read(subjectListProvider.notifier);
+
+    final selectedSub = ref.watch(selectedSubjectProvider);
+    final onSelectSub = ref.read(selectedSubjectProvider.notifier);
+
+    final studentList = ref.watch(studentListProvider);
+    final onStudentList = ref.read(studentListProvider.notifier); 
+
+    // Controlador para agregar una materia
     final subjectNameCtrl = TextEditingController();
 
+    //Controladores para agregar informacion del grupo
+    final groupNameCtrl = TextEditingController();
+    final departamentCtrl = TextEditingController();
+    final periodCtrl = TextEditingController();
+
     void onAddNewSubject( String subjectName){
-    if (subjectName.length > 1){
-      subjectChange.addNewSubject(subjectName);
-      Navigator.pop(context);
+      if (subjectName.length > 1){
+        onSubjectChange.addNewSubject(subjectName);
+        Navigator.pop(context);
+      }
     }
-  }
 
     addNewSubject(){
       customShowAddDialog(
@@ -66,17 +75,19 @@ class StepViewState extends ConsumerState<StepView> {
         () {
           onAddNewSubject(subjectNameCtrl.text);
         },
-      );
-    
-  }
+      ); 
+    }
 
     return Stepper(
         steps: [
+
+        // Paso 1 ELEGIR UNA MATERIA
+
         Step(
           isActive: currentStep == 0,
-          title: const Text('Seleccionar materia'), 
+          title: const Text('Seleccionar una materia'), 
           content: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 ListView.builder(
@@ -86,80 +97,138 @@ class StepViewState extends ConsumerState<StepView> {
                   itemBuilder: (context, index) {
                     final subject = subjectList[index];
                     return ListTile(
-                      leading: Text((index+1).toString()),
+                      selected: selectedSub == subject,
+                      selectedTileColor: seedColor.withOpacity(0.1),
+                      leading: CircleAvatar(child: Text(subject.name.substring(0,2))),
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                       title: Text(subject.name),
                       onTap: () {
+                        if (selectedSub != subject){
+                          onSelectSub.onSelectSubject(subject);
+                        } else if (selectedSub == subject){
+                          final emptySub = SubjectEntity(id: '', userId: '', name: '');
+                          onSelectSub.onSelectSubject(emptySub);
+                        }
+                        return;
+                      },
+                      onLongPress: () {
                         
                       },
+                    );
+                  },
+                ),
+                const SizedBox(height: 15),
+                ElevatedButton(
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.my_library_add_rounded),
+                      SizedBox(width: 10,),
+                      Text('Agregar nueva materia'),
+                    ],
+                  ),
+                  onPressed: () {
+                    addNewSubject();
+                  },
+                ),
+                
+              ],
+            ),
+          ),
+        ),
+
+        // Paso 2 AGREGAR INFORMACION DEL GRUPO
+
+        Step(
+          isActive: currentStep == 1,
+          title: const Text('Información del grupo'),
+          content: Column(
+            children: [
+              TextInput(
+                icon: Icons.people, 
+                title: 'Nombre del Grupo', 
+                placeholder: 'I7A', 
+                controller: groupNameCtrl
+              ),
+              TextInput(
+                icon: Icons.business, 
+                title: 'Nombre del Departamento', 
+                placeholder: 'Departamento de Sistemas y Computación',
+                controller: departamentCtrl
+              ),
+              TextInput(
+                icon: Icons.date_range, 
+                title: 'Periodo', 
+                placeholder: 'AGOSTO-DICIEMBRE/2024',
+                controller: periodCtrl
+              ),
+            ],
+          )
+        ),
+
+        // Paso 3 Establecer un horario
+
+        Step(
+          isActive: currentStep == 2,
+          title: const Text('Establecer el horario'), 
+          content: Column(
+            children: [
+              ToggleButtons(
+                isSelected: toggleButtonsSelection,
+                onPressed: onToggleSchedule.onPressToggle,
+                constraints: const BoxConstraints(
+                  minHeight: 32,
+                  minWidth: 32
+                ),
+                children: dayOfWeekOptions.map(((DayOfWeek, String) shirt) => Text(shirt.$2)).toList()
+              ),
+              Row(
+                children: [
+                  const Text('Establecer un tiempo limite'),
+                  Switch.adaptive(
+                    value: true, 
+                    onChanged: (value) {
+                    
+                    },
+                  ),
+                ],
+              ),
+            ],
+          )
+        ),
+
+        // Paso 4 AGREGAR ESTUDIANTES
+
+        Step(
+          isActive: currentStep == 3,
+          title: const Text('Seleccionar estudiantes'),
+          content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                
+                ListView.builder( 
+                  itemCount: studentList.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (_, index) {
+
+                    final student = studentList[index];
+
+                    return ListTile( 
+                      title: Text(student.name),
+                      subtitle: Text(student.controlNo),
+                      trailing: Text((index+1).toString()),
+                      leading: const CircleAvatar(
+                        radius: 25,
+                        child: Icon(Icons.person),
+                      ),
                     );
                   },
                 ),
                 
                 ElevatedButton(
                   onPressed: () {
-                    addNewSubject();
-                  }, 
-                  child: const Text('Agregar materia'),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Step(
-          isActive: currentStep == 1,
-          title: const Text('Información del grupo'),
-          content: const Column(
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: 'Nombre del grupo'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Nombre del departamento'),
-              ),
-            ],
-          )
-        ),
-        Step(
-          isActive: currentStep == 2,
-          title: const Text('Establecer un horario'), 
-          content: SegmentedButton(
-            multiSelectionEnabled: true,
-            segments: const [
-              ButtonSegment(value: DayOfWeek.monday, icon: Text('lu')),
-              ButtonSegment(value: DayOfWeek.tuesday, icon: Text('ma')),
-              ButtonSegment(value: DayOfWeek.wendsday, icon: Text('mi')),
-              ButtonSegment(value: DayOfWeek.thursday, icon: Text('ju')),
-              ButtonSegment(value: DayOfWeek.friday, icon: Text('vi')),
-            ], 
-            selected: const {DayOfWeek.monday, DayOfWeek.friday}
-          )
-        ),
-        Step(
-          isActive: currentStep == 3,
-          title: const Text('Agregar estudiantes'),
-          content: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Importar alumnos'),
-                ListView.builder( 
-                    itemCount: _data.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (_, index) {
-
-                      final student = _data[index];
-
-                      return ListTile( 
-                        title: Text(student.name),
-                        subtitle: Text(student.controlNo),
-                        trailing: Text(student.plan),
-                      );
-                    },
-                  ),
-                
-                ElevatedButton(
-                  onPressed: () {
-                    getData();
+                    onStudentList.onAddStudentfromList();
                   }, 
                   child: const Text('importar alumnos desde csv')
                 ),
@@ -168,31 +237,14 @@ class StepViewState extends ConsumerState<StepView> {
           ),
       ],
         currentStep: currentStep,
-        onStepTapped: (int newIndex) => stepOnChance.onStepTapped(newIndex), 
-        onStepContinue: () => stepOnChance.onStepContinue(),
-        onStepCancel: () => stepOnChance.onStepCancel(),
+        onStepTapped: (int newIndex) => onStepChange.onStepTapped(newIndex), 
+        onStepContinue: () {
+          if (selectedSub.name.isNotEmpty){
+            onStepChange.onStepContinue();
+          }
+        },
+        onStepCancel: () => onStepChange.onStepCancel(),
       );
-  }
-
-  Future<List<StudentEntity>> getData() async{
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: false,
-      type: FileType.custom,
-      allowedExtensions: ['csv', 'xlsx'],
-    );
-
-    if (result != null) { 
-      filePath = result.files.single.path!; 
-      final input = File(filePath!).openRead(); 
-      final fields = await input .transform(utf8.decoder) .transform(const CsvToListConverter()) .toList(); 
-      setState(() {
-        
-      });
-      _data = StudentEntity.fromCsvTable(fields);
-      return _data;
-    } else {
-      return [];
-    }
   }
 }
 

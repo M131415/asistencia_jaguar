@@ -1,25 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'current_step.dart';
+part of 'subject_list.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentStepHash() => r'81745665dfb952ffdc0db62edd5ad3d614c45185';
+String _$subjectListHash() => r'8ea862d98638e87e561d677bcb385c7c557cbb77';
 
-/// See also [CurrentStep].
-@ProviderFor(CurrentStep)
-final currentStepProvider =
-    AutoDisposeNotifierProvider<CurrentStep, int>.internal(
-  CurrentStep.new,
-  name: r'currentStepProvider',
+/// See also [SubjectList].
+@ProviderFor(SubjectList)
+final subjectListProvider =
+    AutoDisposeNotifierProvider<SubjectList, List<SubjectEntity>>.internal(
+  SubjectList.new,
+  name: r'subjectListProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$currentStepHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$subjectListHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$CurrentStep = AutoDisposeNotifier<int>;
+typedef _$SubjectList = AutoDisposeNotifier<List<SubjectEntity>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
