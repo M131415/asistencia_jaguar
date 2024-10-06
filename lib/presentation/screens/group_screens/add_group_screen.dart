@@ -106,7 +106,7 @@ class StepViewState extends ConsumerState<StepView> {
                         if (selectedSub != subject){
                           onSelectSub.onSelectSubject(subject);
                         } else if (selectedSub == subject){
-                          final emptySub = SubjectEntity(id: '', userId: '', name: '');
+                          final emptySub = Subject(id: '', userId: '', name: '');
                           onSelectSub.onSelectSubject(emptySub);
                         }
                         return;

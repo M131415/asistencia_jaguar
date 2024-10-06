@@ -1,10 +1,10 @@
-class SubjectEntity {
+class Subject {
 
   final String id;
   final String userId;
   final String name;
 
-  SubjectEntity({
+  Subject({
     required this.id, 
     required this.userId, 
     required this.name, 

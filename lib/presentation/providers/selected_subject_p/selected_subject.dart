@@ -1,4 +1,4 @@
-import 'package:asistencia_jaguar/domain/entities/subject_entity.dart';
+import 'package:asistencia_jaguar/domain/entities/subject.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'selected_subject.g.dart';
@@ -6,14 +6,14 @@ part 'selected_subject.g.dart';
 @riverpod
 class SelectedSubject extends _$SelectedSubject {
 
-  final SubjectEntity selectedSubjet = SubjectEntity(id: '', userId: '', name: '');
+  final Subject selectedSubjet = Subject(id: '', userId: '', name: '');
   
   @override
-  SubjectEntity build() {
+  Subject build() {
     return selectedSubjet;
   }
 
-  void onSelectSubject(SubjectEntity sub){
+  void onSelectSubject(Subject sub){
     state = sub;
   }
 }

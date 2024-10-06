@@ -11,22 +11,22 @@ part 'student_list.g.dart';
 @riverpod
 class StudentList extends _$StudentList {
 
-  final List<StudentEntity> studentList = [];
+  final List<Student> studentList = [];
 
-  late List<StudentEntity> studentListFromCSV = [];
+  late List<Student> studentListFromCSV = [];
 
   @override
-  List<StudentEntity> build() {
-    for (StudentEntity sub in getStudentList()){
+  List<Student> build() {
+    for (Student sub in getStudentList()){
       studentList.add(sub);
     }
     return studentList;
   }
 
   // The response of the `GET /api/students` endpoint.
-  List<StudentEntity> getStudentList(){
+  List<Student> getStudentList(){
     return [
-      StudentEntity.fromMap({
+      Student.fromMap({
         'id': '1',
         'userId': '1',
         'controlNo': '19520555',
@@ -56,7 +56,7 @@ class StudentList extends _$StudentList {
     el valor de las columnas para convertirla 
     en una lista de entidades de Estudiantes  */
 @riverpod
-FutureOr<List<StudentEntity>> getStudentsFromCSV(GetStudentsFromCSVRef ref, List<StudentEntity> studentList) async {
+FutureOr<List<Student>> getStudentsFromCSV(GetStudentsFromCSVRef ref, List<Student> studentList) async {
 
   String? filePath;
 
@@ -71,7 +71,7 @@ FutureOr<List<StudentEntity>> getStudentsFromCSV(GetStudentsFromCSVRef ref, List
     final input = File(filePath).openRead(); 
     final fieldList = await input .transform(utf8.decoder) .transform(const CsvToListConverter()) .toList(); 
     
-    studentList = StudentEntity.fromCsvTable(fieldList);
+    studentList = Student.fromCsvTable(fieldList);
 
     return studentList;
 
