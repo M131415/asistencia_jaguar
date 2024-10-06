@@ -14,7 +14,7 @@ class GroupsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.group_add),
         onPressed: () {
-          ref.read(appRouterProvider).goNamed('addGroups');
+          ref.read(appRouterProvider).pushNamed('addGroups');
         },
       ),
       body: const Column(

@@ -1,4 +1,3 @@
-import 'package:asistencia_jaguar/config/config.dart';
 import 'package:asistencia_jaguar/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,12 +20,6 @@ class HomeScreen extends ConsumerWidget {
             icon: Icon( isDarkMode ? Icons.light_mode : Icons.dark_mode )
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.people),
-        onPressed: () {
-          ref.read(appRouterProvider).goNamed('groups');
-        },
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
