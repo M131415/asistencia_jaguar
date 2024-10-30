@@ -30,6 +30,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: false,
         items: _bottomNavItems,
         currentIndex: navigationShell.currentIndex,
         onTap: _onTap,

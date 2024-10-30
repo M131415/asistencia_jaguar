@@ -3,7 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Future<void> customShowAddDialog(BuildContext context, String title, Widget content, VoidCallback onSaveAction) async {
+Future<void> customShowAddDialog({
+  required BuildContext context, 
+  required String title, 
+  required Widget content, 
+  required VoidCallback onSaveAction
+}) async {
   if( Platform.isAndroid ) {
     showDialog(
       context: context,

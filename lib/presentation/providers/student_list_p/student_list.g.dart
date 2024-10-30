@@ -160,7 +160,7 @@ class _GetStudentsFromCSVProviderElement
       (origin as GetStudentsFromCSVProvider).studentList;
 }
 
-String _$studentListHash() => r'dbf657fca97392a119a3cccfc472b808c37827e4';
+String _$studentListHash() => r'3811c3f35f96dec32ded90c243bfdd38846893a0';
 
 /// See also [StudentList].
 @ProviderFor(StudentList)

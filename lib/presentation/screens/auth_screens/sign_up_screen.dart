@@ -25,7 +25,6 @@ class SignUpScreen extends StatelessWidget {
                 _header(context),
                 _name(),
                 _email(),
-                const SizedBox(height: 10,),
                 _password(),
                 _comfirmPassword(),
                 const SizedBox(height: 10,),

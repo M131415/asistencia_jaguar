@@ -9,4 +9,16 @@ class Subject {
     required this.userId, 
     required this.name, 
   });
+
+  Subject copyWith({
+    String? id,
+    String? userId,
+    String? name,
+  }) {
+    return Subject(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+    );
+  }
 }

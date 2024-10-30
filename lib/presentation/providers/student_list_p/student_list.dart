@@ -32,6 +32,18 @@ class StudentList extends _$StudentList {
         'controlNo': '19520555',
         'name': 'Mauricio Emilio Medina Cedillo',
       }),
+      Student.fromMap({
+        'id': '2',
+        'userId': '1',
+        'controlNo': '17520485',
+        'name': 'Alfredo de la cruz',
+      }),
+      Student.fromMap({
+        'id': '3',
+        'userId': '1',
+        'controlNo': '20520684',
+        'name': 'Rosa de la Paz Herrera',
+      }),
     ];
   }
 

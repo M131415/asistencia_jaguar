@@ -25,6 +25,8 @@ GoRouter appRouter(AppRouterRef ref) {
         name: 'signUp',
         builder: (context, state) => SignUpScreen(),
       ),
+
+      // My Scaffold with Bottom Navavigation Bar
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return ScaffoldWithNavBar( navigationShell: navigationShell, );
@@ -48,13 +50,6 @@ GoRouter appRouter(AppRouterRef ref) {
                 path: '/groups',
                 name: 'groups',
                 builder: (context, state) => const GroupsScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'addGroups',
-                    name: 'addGroups',
-                    builder: (context, state) => const AddGroupScreen(),
-                  ),
-                ]
               ),
             ],
           ),

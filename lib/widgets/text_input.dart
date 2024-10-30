@@ -20,45 +20,50 @@ class TextInput extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 20),
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: const Offset(0, 5),
-            blurRadius: 5,
-          )
-        ]
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(title, style: const TextStyle(
-              fontSize: 15,
-            ),),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+            title, 
+            style: Theme.of(context).textTheme.bodyLarge
           ),
-          TextFormField(
+        ),
+        Container(
+          padding: const EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 20),
+          margin: const EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                offset: const Offset(0, 5),
+                blurRadius: 5,
+              )
+            ]
+          ),
+          child: TextFormField(
             validator: _validatorText,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             keyboardType: keyboard,
             controller: controller,
             obscureText: isPassword,
             decoration: InputDecoration(
+              contentPadding: const EdgeInsets.only(top: 10),
               focusedBorder: InputBorder.none,
               border: InputBorder.none,
               prefixIcon: Icon(icon),
+              suffixIcon: isPassword
+                ? const Icon(Icons.visibility_off) 
+                : null,
               hintText: placeholder,
               hintStyle: const TextStyle(color: Color.fromARGB(208, 158, 158, 158))
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
   String? _validatorText(String? value){

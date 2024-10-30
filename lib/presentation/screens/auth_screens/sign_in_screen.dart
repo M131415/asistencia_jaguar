@@ -22,7 +22,6 @@ class SignInScreen extends StatelessWidget {
               children: [
                 _header(context),
                 _email(),
-                const SizedBox(height: 10,),
                 _password(),
                 const SizedBox(height: 50,),
                 _login(context),
