@@ -24,12 +24,9 @@ class SignInScreen extends StatelessWidget {
                 _email(),
                 _password(),
                 const SizedBox(height: 50,),
-                _login(context),
-                const SizedBox(height: 20,),
-                TextButton(
-                  onPressed: () {context.goNamed('signUp');}, 
-                  child: const Text('Registrate aquí')
-                ),
+                _signIn(context),
+                const SizedBox(height: 10,),
+                _forgotPassword(context),
               ],
             ),
           ),
@@ -42,7 +39,7 @@ class SignInScreen extends StatelessWidget {
       height: 200,
       child: Center(
         child: Text(
-          'Bienvenido Docente Jaguar 🐆',
+          'Bienvenido Jaguar \n 🐆',
           style: Theme.of(context).textTheme.headlineLarge,
           textAlign: TextAlign.center,
         ),
@@ -52,9 +49,9 @@ class SignInScreen extends StatelessWidget {
 
   Widget _email() {
     return TextInput(
-      icon: Icons.email, 
-      title: 'Correo Electrónico', 
-      placeholder: 'jaguar@tecnm.mx', 
+      icon: Icons.person_2_sharp, 
+      title: 'Nombre de Usuario', 
+      placeholder: 'username', 
       controller: _emailController
     );
   }
@@ -69,7 +66,7 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  Widget _login(BuildContext context) {
+  Widget _signIn(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(255, 0, 68, 169),
@@ -80,7 +77,9 @@ class SignInScreen extends StatelessWidget {
           elevation: 0,
       ),
       onPressed: (){
-        
+        if(_formKey.currentState!.validate()){
+          context.goNamed('home');
+        }
       },
       child: const Text(
         "Ingresar",
@@ -89,4 +88,13 @@ class SignInScreen extends StatelessWidget {
         ),),
     );
   }
+
+  Widget _forgotPassword(BuildContext context){
+      return Center(
+        child: TextButton(
+          onPressed: () {}, 
+          child: const Text('¿Olvidó su contraseña?')
+        ),
+      );
+    }
 }

@@ -20,11 +20,6 @@ GoRouter appRouter(AppRouterRef ref) {
         name: 'signIn',
         builder: (context, state) => SignInScreen(),
       ),
-      GoRoute(
-        path: '/signUp',
-        name: 'signUp',
-        builder: (context, state) => SignUpScreen(),
-      ),
 
       // My Scaffold with Bottom Navavigation Bar
       StatefulShellRoute.indexedStack(
@@ -38,6 +33,7 @@ GoRouter appRouter(AppRouterRef ref) {
             routes: <RouteBase>[
               GoRoute(
                 path: '/',
+                name: 'home',
                 builder: (context, state) => const HomeScreen(),
               ),
             ]
