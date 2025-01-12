@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:asistencia_jaguar/domain/entities.dart';
+import 'package:asistencia_jaguar/data/models/user_student.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,40 +11,21 @@ part 'student_list.g.dart';
 @riverpod
 class StudentList extends _$StudentList {
 
-  final List<Student> studentList = [];
+  final List<UserStudent> studentList = [];
 
-  late List<Student> studentListFromCSV = [];
+  late List<UserStudent> studentListFromCSV = [];
 
   @override
-  List<Student> build() {
-    for (Student sub in getStudentList()){
+  List<UserStudent> build() {
+    for (UserStudent sub in getStudentList()){
       studentList.add(sub);
     }
     return studentList;
   }
 
   // The response of the `GET /api/students` endpoint.
-  List<Student> getStudentList(){
-    return [
-      Student.fromMap({
-        'id': '1',
-        'userId': '1',
-        'controlNo': '19520555',
-        'name': 'Mauricio Emilio Medina Cedillo',
-      }),
-      Student.fromMap({
-        'id': '2',
-        'userId': '1',
-        'controlNo': '17520485',
-        'name': 'Alfredo de la cruz',
-      }),
-      Student.fromMap({
-        'id': '3',
-        'userId': '1',
-        'controlNo': '20520684',
-        'name': 'Rosa de la Paz Herrera',
-      }),
-    ];
+  List<UserStudent> getStudentList(){
+    return [];
   }
 
   /*  Agrega una Estudiantes a partir de una lista obtenida
@@ -68,7 +49,7 @@ class StudentList extends _$StudentList {
     el valor de las columnas para convertirla 
     en una lista de entidades de Estudiantes  */
 @riverpod
-FutureOr<List<Student>> getStudentsFromCSV(GetStudentsFromCSVRef ref, List<Student> studentList) async {
+FutureOr<List<UserStudent>> getStudentsFromCSV(GetStudentsFromCSVRef ref, List<UserStudent> studentList) async {
 
   String? filePath;
 
@@ -83,7 +64,7 @@ FutureOr<List<Student>> getStudentsFromCSV(GetStudentsFromCSVRef ref, List<Stude
     final input = File(filePath).openRead(); 
     final fieldList = await input .transform(utf8.decoder) .transform(const CsvToListConverter()) .toList(); 
     
-    studentList = Student.fromCsvTable(fieldList);
+    studentList = UserStudent.fromCsvTable(fieldList);
 
     return studentList;
 

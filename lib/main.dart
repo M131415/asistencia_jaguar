@@ -1,9 +1,14 @@
 import 'package:asistencia_jaguar/config/config.dart';
+import 'package:asistencia_jaguar/data/sources/user_prefreferences.dart';
 import 'package:asistencia_jaguar/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final prefs = UserPreferences();
+  await prefs.initPrefs();
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -20,11 +25,11 @@ class MyApp extends ConsumerWidget {
     final appRouter = ref.watch(appRouterProvider);
     final isDarkMode = ref.watch(darkModeProvider);
 
-    return  MaterialApp.router (
-        debugShowCheckedModeBanner: false,
-        title: 'Asistencia Jaguar',
-        theme: AppTheme( isDarkmode: isDarkMode).getTheme(),
-        routerConfig: appRouter,
-      );
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'Asistencia Jaguar',
+      theme: AppTheme( isDarkmode: isDarkMode).getTheme(),
+      routerConfig: appRouter,
+    );
   }
 }

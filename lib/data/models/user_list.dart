@@ -31,7 +31,7 @@ class UserList extends User{
     'last_name': lastName,
     'email': email,
     'image': image,
-    'rol': rol.name.toUpperCase(),
+    'rol': rol.toJson(),
   };
 
 }

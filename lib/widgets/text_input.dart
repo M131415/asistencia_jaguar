@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TextInput extends StatelessWidget {
+class TextInput extends StatefulWidget {
   final IconData icon;
   final String title;
   final String placeholder;
@@ -17,7 +17,20 @@ class TextInput extends StatelessWidget {
     this.keyboard = TextInputType.text, 
     this.isPassword = false,
   });
-  
+
+  @override
+  State<TextInput> createState() => _TextInputState();
+}
+
+class _TextInputState extends State<TextInput> {
+
+  bool _showPassword = true;  // Agregar variable para controlar visibilidad
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,7 +39,7 @@ class TextInput extends StatelessWidget {
         Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(
-            title, 
+            widget.title, 
             style: Theme.of(context).textTheme.bodyLarge
           ),
         ),
@@ -34,7 +47,7 @@ class TextInput extends StatelessWidget {
           padding: const EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 20),
           margin: const EdgeInsets.only(bottom: 20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).dialogBackgroundColor,
             borderRadius: BorderRadius.circular(14),
             boxShadow: <BoxShadow>[
               BoxShadow(
@@ -47,18 +60,24 @@ class TextInput extends StatelessWidget {
           child: TextFormField(
             validator: _validatorText,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            keyboardType: keyboard,
-            controller: controller,
-            obscureText: isPassword,
+            keyboardType: widget.keyboard,
+            controller: widget.controller,
+            obscureText: widget.isPassword ? _showPassword : false,
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(top: 10),
               focusedBorder: InputBorder.none,
               border: InputBorder.none,
-              prefixIcon: Icon(icon),
-              suffixIcon: isPassword
-                ? const Icon(Icons.visibility_off) 
+              prefixIcon: Icon(widget.icon),
+              suffixIcon: widget.isPassword 
+                ? IconButton(
+                    icon: Icon(
+                      _showPassword ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  )
                 : null,
-              hintText: placeholder,
+              hintText: widget.placeholder,
               hintStyle: const TextStyle(color: Color.fromARGB(208, 158, 158, 158))
             ),
           ),
@@ -66,6 +85,7 @@ class TextInput extends StatelessWidget {
       ],
     );
   }
+
   String? _validatorText(String? value){
 
     if(value == null || value.trim().isEmpty){

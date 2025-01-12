@@ -7,7 +7,7 @@ part of 'student_list.dart';
 // **************************************************************************
 
 String _$getStudentsFromCSVHash() =>
-    r'6086534ac6077861ffffdab8dd17850a1e7ab0d0';
+    r'0b900a3225980593826a581bea57e47add41c6f1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -35,13 +35,13 @@ class _SystemHash {
 const getStudentsFromCSVProvider = GetStudentsFromCSVFamily();
 
 /// See also [getStudentsFromCSV].
-class GetStudentsFromCSVFamily extends Family<AsyncValue<List<Student>>> {
+class GetStudentsFromCSVFamily extends Family<AsyncValue<List<UserStudent>>> {
   /// See also [getStudentsFromCSV].
   const GetStudentsFromCSVFamily();
 
   /// See also [getStudentsFromCSV].
   GetStudentsFromCSVProvider call(
-    List<Student> studentList,
+    List<UserStudent> studentList,
   ) {
     return GetStudentsFromCSVProvider(
       studentList,
@@ -74,10 +74,10 @@ class GetStudentsFromCSVFamily extends Family<AsyncValue<List<Student>>> {
 
 /// See also [getStudentsFromCSV].
 class GetStudentsFromCSVProvider
-    extends AutoDisposeFutureProvider<List<Student>> {
+    extends AutoDisposeFutureProvider<List<UserStudent>> {
   /// See also [getStudentsFromCSV].
   GetStudentsFromCSVProvider(
-    List<Student> studentList,
+    List<UserStudent> studentList,
   ) : this._internal(
           (ref) => getStudentsFromCSV(
             ref as GetStudentsFromCSVRef,
@@ -105,11 +105,11 @@ class GetStudentsFromCSVProvider
     required this.studentList,
   }) : super.internal();
 
-  final List<Student> studentList;
+  final List<UserStudent> studentList;
 
   @override
   Override overrideWith(
-    FutureOr<List<Student>> Function(GetStudentsFromCSVRef provider) create,
+    FutureOr<List<UserStudent>> Function(GetStudentsFromCSVRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -126,7 +126,7 @@ class GetStudentsFromCSVProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<Student>> createElement() {
+  AutoDisposeFutureProviderElement<List<UserStudent>> createElement() {
     return _GetStudentsFromCSVProviderElement(this);
   }
 
@@ -145,27 +145,27 @@ class GetStudentsFromCSVProvider
   }
 }
 
-mixin GetStudentsFromCSVRef on AutoDisposeFutureProviderRef<List<Student>> {
+mixin GetStudentsFromCSVRef on AutoDisposeFutureProviderRef<List<UserStudent>> {
   /// The parameter `studentList` of this provider.
-  List<Student> get studentList;
+  List<UserStudent> get studentList;
 }
 
 class _GetStudentsFromCSVProviderElement
-    extends AutoDisposeFutureProviderElement<List<Student>>
+    extends AutoDisposeFutureProviderElement<List<UserStudent>>
     with GetStudentsFromCSVRef {
   _GetStudentsFromCSVProviderElement(super.provider);
 
   @override
-  List<Student> get studentList =>
+  List<UserStudent> get studentList =>
       (origin as GetStudentsFromCSVProvider).studentList;
 }
 
-String _$studentListHash() => r'3811c3f35f96dec32ded90c243bfdd38846893a0';
+String _$studentListHash() => r'9ea1d3f99494ef674d36d29eaf9f137b11edfa69';
 
 /// See also [StudentList].
 @ProviderFor(StudentList)
 final studentListProvider =
-    AutoDisposeNotifierProvider<StudentList, List<Student>>.internal(
+    AutoDisposeNotifierProvider<StudentList, List<UserStudent>>.internal(
   StudentList.new,
   name: r'studentListProvider',
   debugGetCreateSourceHash:
@@ -174,6 +174,6 @@ final studentListProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$StudentList = AutoDisposeNotifier<List<Student>>;
+typedef _$StudentList = AutoDisposeNotifier<List<UserStudent>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

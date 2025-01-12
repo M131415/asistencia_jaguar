@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:asistencia_jaguar/config/routes/scaffold_with_nav_bar.dart';
+import 'package:asistencia_jaguar/data/models/career_model.dart';
 import 'package:asistencia_jaguar/data/sources/user_prefreferences.dart';
-import 'package:asistencia_jaguar/domain/models/career.dart';
 import 'package:asistencia_jaguar/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -82,7 +82,7 @@ GoRouter appRouter(AppRouterRef ref) {
                         name: Routes.adminCareer.name,
                         builder: (context, state) { 
                           // Acceder al extra
-                          final career = state.extra as Career?;  
+                          final career = state.extra as CareerModel?;  
                           return AdminCareerFormScreen(career: career,);
                         }
                       ),

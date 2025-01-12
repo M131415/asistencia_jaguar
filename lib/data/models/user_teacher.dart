@@ -17,10 +17,7 @@ class UserTeacher extends User {
 
   // Constructor para crear una instancia desde un mapa JSON
   UserTeacher.fromJson(Json json) : 
-    teacherProfile = TeacherProfile(
-      id: json['teacher_profile']['id'] as int,
-      degree: json['teacher_profile']['degree'] as String,
-    ),
+    teacherProfile = TeacherProfile.fromJson(json['teacher_profile'] as Json),
     super(
       id: json['id'] as int,
       username: json['username'] as String,
@@ -28,7 +25,7 @@ class UserTeacher extends User {
       lastName: json['last_name'] as String,
       email: json['email'] as String,
       image: json['image'] as String,
-      rol: json['rol'] as UserRol,
+      rol: UserRol.fromString(json['rol']),
     );
 
   // Método para convertir la instancia en un mapa JSON
@@ -39,7 +36,7 @@ class UserTeacher extends User {
       'last_name': lastName,
       'email': email,
       'image': image,
-      'rol': rol.name.toUpperCase(),
+      'rol': rol.toJson(),
       'teacher_profile': teacherProfile.id,
     };
   }
@@ -56,8 +53,8 @@ class TeacherProfile {
 
   // Constructor para crear una instancia desde un mapa JSON
   TeacherProfile.fromJson(Json json) : 
-    id = json['teacher_profile']['id'] as int,
-    degree = json['teacher_profile']['degree'] as String;
+    id = json['id'] as int,
+    degree = json['degree'] as String;
 
   // Método para convertir la instancia en un mapa JSON
   Json toJson() {

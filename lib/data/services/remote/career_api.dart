@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:asistencia_jaguar/config/endpoints/enpoints.dart';
-import 'package:asistencia_jaguar/domain/models.dart';
+import 'package:asistencia_jaguar/data/models/career_model.dart';
 import 'package:dio/dio.dart';
 //import 'package:http/http.dart';
 
@@ -15,7 +15,7 @@ class CareerService {
       },
     );
 
-  Future<List<Career>> getAllCareers() async {
+  Future<List<CareerModel>> getAllCareers() async {
     
 
     const url = Enpoints.careersAPI;
@@ -25,7 +25,7 @@ class CareerService {
 
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['results']; 
-        return data.map((json) => Career.fromJson(json)).toList();
+        return data.map((json) => CareerModel.fromJson(json)).toList();
       } else {
         log('Failed to fetch careers: ${response.statusCode}');
         return [];
@@ -37,7 +37,7 @@ class CareerService {
   }
 
   // Create a new Career
-  Future<bool> createCareer(Career career) async {
+  Future<bool> createCareer(CareerModel career) async {
 
     const url = Enpoints.careersAPI;
 
@@ -62,7 +62,7 @@ class CareerService {
   }
 
   // Update an existing Career
-  Future<bool> updateCareer(int id, Career career) async {
+  Future<bool> updateCareer(int id, CareerModel career) async {
 
     final url = '${Enpoints.careersAPI}$id/';
 

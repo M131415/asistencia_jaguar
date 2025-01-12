@@ -19,6 +19,7 @@ enum UserRol {
         return UserRol.none;
     }
   }
+  String toJson() => name.toUpperCase();
 }
 
 class User extends Equatable {

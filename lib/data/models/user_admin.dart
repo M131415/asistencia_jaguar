@@ -20,7 +20,7 @@ class UserAdmin extends User{
     lastName: json['last_name'] as String,
     email: json['email'] as String,
     image: json['image'] as String,
-    rol: json['rol'] as UserRol,
+    rol: UserRol.fromString(json['rol']),
   );
 
   // Método para convertir la instancia en un mapa JSON
@@ -31,7 +31,7 @@ class UserAdmin extends User{
       'last_name': lastName,
       'email': email,
       'image': image,
-      'rol': rol,
+      'rol': rol.toJson(),
     };
   }
 

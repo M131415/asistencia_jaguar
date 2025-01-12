@@ -1,20 +1,24 @@
+import 'package:asistencia_jaguar/config/routes/my_router.dart';
+import 'package:asistencia_jaguar/data/sources/user_prefreferences.dart';
 import 'package:asistencia_jaguar/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+class AdminHomeScreen extends ConsumerStatefulWidget {
+  const AdminHomeScreen({super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
 }
 
-class HomeScreenState extends ConsumerState<HomeScreen> {
+class HomeScreenState extends ConsumerState<AdminHomeScreen> {
   
   @override
   Widget build(BuildContext context) {
 
     final isDarkMode = ref.watch(darkModeProvider);
+    final goRouter = ref.watch(appRouterProvider);
+    final userPref = UserPreferences();
     
     return SafeArea(
       child: Scaffold(
@@ -29,10 +33,16 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               icon: const Icon(Icons.account_circle),
               itemBuilder: (context) {
                 return [
-                  const PopupMenuItem(child: Text('Perfil')),
-                  const PopupMenuItem(child: Text('Cerrar sesión')),
+                  PopupMenuItem(
+                    child: const Text('Cerrar sesión'),
+                    onTap: () {
+                      goRouter.pushNamed(Routes.login.name);
+                      userPref.setDefaultValues();
+                    },
+                  ),
                 ];
-              },),
+              },
+            ),
           ],
         ),
         body: Container(
@@ -40,7 +50,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: const Column(
             children: [
               Center(
-                child: Text('Bienvenido bb')
+                child: Text('Cursos del dia')
               ),
             ],
           ),
