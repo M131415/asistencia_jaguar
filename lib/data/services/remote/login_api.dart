@@ -44,12 +44,13 @@ class LoginService {
       }
       return Either.left(HttpRequestFailure.unknown);
     } catch (e) {
+      log('Error en autentucate: $e');
       late HttpRequestFailure failure;
       if (e is DioException) {
         // Aquí manejamos los status codes de error
         final statusCode = e.response?.statusCode;
         final message = e.response?.statusMessage;
-        log('Error: $statusCode - $message');
+        log('Dio Error fetching careers: $message');
         if (statusCode != null) {
           for (final status in HttpRequestFailure.values) {
             if (statusCode == status.statusCode) {

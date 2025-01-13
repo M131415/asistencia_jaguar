@@ -54,7 +54,7 @@ class AdminPanelScreen extends ConsumerWidget {
                 icon: Icons.room_rounded, 
                 label: 'Aulas', 
                 onPressed: () {
-                  appRouter.pushNamed('school_rooms');
+                  appRouter.pushNamed(Routes.adminSchoolRoomList.name);
                 },
               ),
               CustomButtom(
@@ -84,7 +84,7 @@ class AdminPanelScreen extends ConsumerWidget {
               CustomButtom(
                 icon: Icons.school_rounded, 
                 label: 'Carreras', 
-                onPressed: () { appRouter.pushNamed('admin_careers');},
+                onPressed: () { appRouter.pushNamed(Routes.adminCareerList.name);},
               ),
             ],
           ),

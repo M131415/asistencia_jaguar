@@ -90,7 +90,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
       ),
       onPressed: _handleLogin,
       child: _isLoading
-          ? const CircularProgressIndicator()
+          ? const CircularProgressIndicator(color: Colors.white,)
           : const Text(
             'Iniciar Sesión',
             style: TextStyle(color: Colors.white),

@@ -1,112 +1,130 @@
 import 'dart:developer';
 
 import 'package:asistencia_jaguar/config/endpoints/enpoints.dart';
+import 'package:asistencia_jaguar/data/either.dart';
+import 'package:asistencia_jaguar/data/http_request_failure.dart';
 import 'package:asistencia_jaguar/data/models/career_model.dart';
+import 'package:asistencia_jaguar/data/services/token_provider.dart';
+import 'package:asistencia_jaguar/data/typedefs.dart';
 import 'package:dio/dio.dart';
-//import 'package:http/http.dart';
+
+typedef CareerListFuture = FutureEither<HttpRequestFailure, List<CareerModel>>;
+typedef CareerFuture = FutureEither<HttpRequestFailure, bool>;
 
 class CareerService {
-  // final Client _client;
-  // final _tokenProvider = TokenProvider()
-  final Dio _dio = Dio();
-  final options = Options(
-      headers: {
-        Headers.contentTypeHeader: 'application/json',
-      },
-    );
 
-  Future<List<CareerModel>> getAllCareers() async {
-    
+  final _tokenProvider = TokenProvider();
+  final _dio = Dio();
+  final _url = Enpoints.careersAPI;
 
-    const url = Enpoints.careersAPI;
-
+  Future<Options> _getOptions() async {
     try {
-      final response = await _dio.get(url, options: options);
+      final token = await _tokenProvider.getToken();
+      return Options(
+        headers: {
+          Headers.contentTypeHeader: 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+    } catch (e) {
+      log('Error obteniendo token: $e');
+      throw HttpRequestFailure.unauthorized;
+    }
+  }
+
+  CareerListFuture getAllCareers() async {
+    try {
+      final options = await _getOptions();
+      final response = await _dio.get(_url, options: options);
 
       if (response.statusCode == 200) {
-        List<dynamic> data = response.data['results']; 
-        return data.map((json) => CareerModel.fromJson(json)).toList();
+        List<dynamic> data = response.data['results'];
+        final careerList = data.map((json) => CareerModel.fromJson(json)).toList();
+        return Either.right(careerList);
       } else {
-        log('Failed to fetch careers: ${response.statusCode}');
-        return [];
+        return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      log('Error fetching careers: $e');
-      return [];
+      final error = _cathError(e);
+      return Either.left(error);
     }
   }
 
   // Create a new Career
-  Future<bool> createCareer(CareerModel career) async {
-
-    const url = Enpoints.careersAPI;
-
+  CareerFuture createCareer(CareerModel career) async {
     try {
-      final response = await _dio.post(
-        url,
-        options: options,
-        data: career.toJson(),
-      );
+      final options = await _getOptions();
+      final response = await _dio.post(_url, options: options, data: career.toJson(),);
 
       if (response.statusCode == 201) {
         log('Career created successfully.');
-        return true;
+        return Either.right(true);
       } else {
-        log('Failed to create career: ${response.statusCode}');
-        return false;
+        return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      log('Error creating career: $e');
-      return false;
+      final error = _cathError(e);
+      return Either.left(error);
     }
   }
 
   // Update an existing Career
-  Future<bool> updateCareer(int id, CareerModel career) async {
-
-    final url = '${Enpoints.careersAPI}$id/';
-
+  CareerFuture updateCareer(int id, CareerModel career) async {
     try {
-      final response = await _dio.put(
-        url,
-        options: options,
-        data: career.toJson(),
-      );
+
+      final options = await _getOptions();
+      final response = await _dio.put('$_url$id/', options: options, data: career.toJson());
 
       if (response.statusCode == 200) {
         log('Career updated successfully.');
-        return true;
+        return Either.right(true);
       } else {
         log('Failed to update career: ${response.statusCode}');
-        return false;
+        return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      log('Error updating career: $e');
-      return false;
+      final error = _cathError(e);
+      return Either.left(error);
     }
   }
 
   // Delete a Career
-  Future<bool> deleteCareer(int id) async {
-
-    final url = '${Enpoints.careersAPI}$id/';
-
+  CareerFuture deleteCareer(int id) async {
     try {
-      final response = await _dio.delete(
-        url,
-        options: options,
-      );
+      final options = await _getOptions();
+      final response = await _dio.delete('$_url$id/', options: options);
 
       if (response.statusCode == 204) {
         log('Career deleted successfully.');
-        return true;
+        return Either.right(true);
       } else {
         log('Failed to delete career: ${response.statusCode}');
-        return false;
+        return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      log('Error deleting career: $e');
-      return false;
+      final error = _cathError(e);
+      return Either.left(error);
     }
+  }
+  // Catch error
+  HttpRequestFailure _cathError(e) {
+    log('Errors: $e');
+    late HttpRequestFailure failure;
+    if (e is DioException) {
+      final statusCode = e.response?.statusCode;
+      if (statusCode != null) {
+        for (final status in HttpRequestFailure.values) {
+          if (statusCode == status.statusCode) {
+            return status;
+          }
+        }
+      }
+      failure = HttpRequestFailure.network;
+    } else if (e is HttpRequestFailure) {
+      failure = e;
+    } else {
+      failure = HttpRequestFailure.unknown;
+    }
+    return failure;
   }
 }

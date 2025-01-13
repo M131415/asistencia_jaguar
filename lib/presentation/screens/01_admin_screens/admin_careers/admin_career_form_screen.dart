@@ -1,6 +1,6 @@
 import 'package:asistencia_jaguar/config/routes/my_router.dart';
 import 'package:asistencia_jaguar/data/models/career_model.dart';
-import 'package:asistencia_jaguar/data/services/remote/career_api.dart';
+import 'package:asistencia_jaguar/presentation/providers/career_p/career_provider.dart';
 import 'package:asistencia_jaguar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +9,6 @@ class AdminCareerFormScreen extends ConsumerWidget {
    AdminCareerFormScreen({super.key, this.career});
 
   final CareerModel? career;
-  final _careerService = CareerService();
 
   final _codeController = TextEditingController();
   final _nameController = TextEditingController();
@@ -77,7 +76,7 @@ class AdminCareerFormScreen extends ConsumerWidget {
                       height: 70,
                       icon: Icons.school_rounded, 
                       label: 'Actualizar Carrera', 
-                      onPressed: () {
+                      onPressed: () async{
                         if(_formKey.currentState!.validate()){
                           final updateCareer = CareerModel(
                             id: career!.id,
@@ -86,8 +85,27 @@ class AdminCareerFormScreen extends ConsumerWidget {
                             shortName: _shortNameController.text,
                             specialty: _specialtyController.text
                           );
-                          _careerService.updateCareer(career!.id, updateCareer);
-                          appRouter.pop();
+                          final result = await ref.read(careerStateProvider.notifier).updateCareer(career!.id, updateCareer);
+                          if (result){
+                            appRouter.pop();
+                            if(context.mounted){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Carrera Actualizada Correctamente'),
+                                  backgroundColor: Theme.of(context).buttonTheme.colorScheme?.primary
+                                ),
+                              );
+                            }
+                          } else {
+                            if(context.mounted){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Error al actualizar la carrera'),
+                                  backgroundColor: Theme.of(context).buttonTheme.colorScheme?.error
+                                ),
+                              );
+                            }
+                          }
                         }
                       },
                     )
@@ -96,7 +114,7 @@ class AdminCareerFormScreen extends ConsumerWidget {
                       height: 70,
                       icon: Icons.school_rounded, 
                       label: 'Crear Carrera', 
-                      onPressed: () {
+                      onPressed: () async{
                         if(_formKey.currentState!.validate()){
                           final newCareer0 = CareerModel(
                             id: 0,
@@ -106,8 +124,27 @@ class AdminCareerFormScreen extends ConsumerWidget {
                             
                             specialty: _specialtyController.text
                           );
-                          _careerService.createCareer(newCareer0);
-                          appRouter.pop();
+                          final result = await ref.read(careerStateProvider.notifier).createCareer(newCareer0);
+                          if (result){
+                            appRouter.pop();
+                            if(context.mounted){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Carrera Creada Correctamente'),
+                                  backgroundColor: Theme.of(context).buttonTheme.colorScheme?.primary
+                                ),
+                              );
+                            }
+                          } else {
+                            if(context.mounted){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Error al crear la carrera'),
+                                  backgroundColor: Theme.of(context).buttonTheme.colorScheme?.error
+                                ),
+                              );
+                            }
+                          }
                         }
                       },
                 ),

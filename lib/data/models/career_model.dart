@@ -16,7 +16,7 @@ class CareerModel extends Career{
     code: json['code'] as String,
     name: json['name'] as String,
     shortName: json['short_name'] as String,
-    specialty: json['speciality'] as String,
+    specialty: json['specialty'] as String,
   );
 
   // Método para convertir la instancia en un mapa JSON
