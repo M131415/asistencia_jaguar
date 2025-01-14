@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Future<void> customShowAddDialog({
@@ -9,47 +6,26 @@ Future<void> customShowAddDialog({
   required Widget content, 
   required VoidCallback onSaveAction
 }) async {
-  if( Platform.isAndroid ) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: content,
-          actions: [
-            MaterialButton(
-              onPressed: onSaveAction,
-              child: const Text('Agregar'),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: content,
+        actions: [
+          ElevatedButton(
+            onPressed: onSaveAction, 
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).buttonTheme.colorScheme?.onPrimary
             ),
-            MaterialButton(
-              child: const Text('Cancelar'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    showCupertinoDialog(
-      context: context, 
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text(title),
-          content: content,
-          actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: onSaveAction,
-              child: const Text('Agregar'),
-            ),
-            CupertinoDialogAction(
-              isDestructiveAction: true,
-              child: const Text('Cancelar'),
-              onPressed: () => Navigator.pop(context),
-            ), 
-          ],
-        );
-      },
-    );
-  }
+            child: const Text('Confirmar')
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(), 
+            child: const Text('Cancelar')
+          ),
+        ],
+      );
+    },
+  );
 }

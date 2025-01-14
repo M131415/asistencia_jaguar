@@ -3,7 +3,7 @@
 import 'dart:developer';
 
 import 'package:asistencia_jaguar/data/models/career_model.dart';
-import 'package:asistencia_jaguar/data/services/remote/career_api.dart';
+import 'package:asistencia_jaguar/data/services/remote/02_course_services/career_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'career_provider.g.dart';

@@ -1,4 +1,6 @@
 import 'package:asistencia_jaguar/config/routes/my_router.dart';
+import 'package:asistencia_jaguar/data/models/school_room_model.dart';
+import 'package:asistencia_jaguar/presentation/providers/school_room_p/school_room_provider.dart';
 import 'package:asistencia_jaguar/widgets/custom_show_add_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,8 +12,9 @@ class AdminSchoolRoomListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final appRouter = ref.watch(appRouterProvider);
-    final name = TextEditingController();
-    //final currentName = TextEditingController();
+    final nameController = TextEditingController();
+    final colorScheme = Theme.of(context).colorScheme;
+    final currentNameController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -21,35 +24,38 @@ class AdminSchoolRoomListScreen extends ConsumerWidget {
         onPressed: () async {
           customShowAddDialog(
             content: TextField(
-              controller: name,
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Nombre del aula',
+              ),
             ),
               
             context: context,
             onSaveAction: () async{
-              //final newSchoolRoom = SchoolRoom(name: name.text);
-                
-              try {
+              final newSchoolRoom = SchoolRoomModel(id: 0, name: nameController.text);
               // Llama al provider para agregar el aula
-              appRouter.pop();
-              name.clear();
-
-              if (context.mounted){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Aula registrada correctamente'),
-                    duration: Duration(seconds: 3),
-                  )
-                );
-              }
-              } catch (e) {
+              final result = await ref.read(schoolRoomStateProvider.notifier).createSchoolRoom(newSchoolRoom);
+              
+              if (result) {
+                appRouter.pop();
                 if (context.mounted){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error al agregar el aula: $e')),
-                    );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Aula agregada correctamente'),
+                      duration: Duration(seconds: 3),
+                    )
+                  );
+                }
+              } else {
+                if (context.mounted){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Error al agregar el aula'),
+                      duration: Duration(seconds: 3),
+                    )
+                  );
                 }
               }
-                
-              
             },
             title: 'Agregar Aula'
           );
@@ -58,11 +64,146 @@ class AdminSchoolRoomListScreen extends ConsumerWidget {
         icon: const Icon(Icons.room_rounded),
         label: const Text('Agregar Aula')
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: const Column(
-            children: [
-              /* schoolRooms.when(
+      body: ref.watch(schoolRoomStateProvider).when(
+        data: (schoolRooms) => GridView.builder(
+          padding: const EdgeInsets.all(10),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemCount: schoolRooms.length,
+          itemBuilder: (context, index) => GestureDetector(
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.onPrimary,
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(72, 100, 141, 153),
+                    blurRadius: 4.0,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.business_outlined,
+                    size: 35,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    schoolRooms[index].name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+              ],
+              ),
+            ),
+            onLongPress: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    height: 170,
+                    padding: const EdgeInsets.all(4),
+                    child: ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(child: Text(schoolRooms[index].name)),
+                        ),
+                        ListTile(
+                          title: const Text('Editar'),
+                          leading: const Icon(Icons.edit),
+                          onTap: () async {
+                            currentNameController.text = schoolRooms[index].name;
+                            customShowAddDialog(
+                              content: TextField(
+                                controller: currentNameController,
+                              ),
+                              context: context,
+                              onSaveAction: () async {
+                                 // Llama al provider para actualizar el aula
+                                  final result = await ref.read(schoolRoomStateProvider.notifier).updateSchoolRoom(
+                                    schoolRooms[index].id,
+                                    SchoolRoomModel(id: schoolRooms[index].id, name: currentNameController.text)
+                                  );
+                                  appRouter.pop();
+                                  if (result) {
+                                    if (context.mounted){
+                                      appRouter.pop();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Aula actualizada correctamente'),
+                                          duration: Duration(seconds: 3),
+                                        )
+                                      );
+                                    }
+                                  } else {
+                                    if (context.mounted){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Error al actualizar el aula'),
+                                          duration: Duration(seconds: 3),
+                                        )
+                                      );
+                                    }
+                                  }
+                                  
+                              },
+                              title: 'Actualizar Aula'
+                            );
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Eliminar'),
+                          leading: const Icon(Icons.delete),
+                          onTap: () async {
+                            final result =  await ref.read(schoolRoomStateProvider.notifier).deleteSchoolRoom(schoolRooms[index].id);
+                            appRouter.pop();
+                            if (result) {
+                              if (context.mounted){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Aula eliminada correctamente'),
+                                    duration: Duration(seconds: 3),
+                                  )
+                                );
+                              }
+                            } else {
+                              if (context.mounted){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Error al eliminar el aula'),
+                                    duration: Duration(seconds: 3),
+                                  )
+                                );
+                              }
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  );
+                }
+              );
+            },
+          ),
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+      )
+    );
+  }
+}
+
+/* schoolRooms.when(
               data: (schoolRooms) => Flexible(
                 child: CustomScrollView(
                   slivers: <Widget>[
@@ -95,70 +236,7 @@ class AdminSchoolRoomListScreen extends ConsumerWidget {
                             )
                           ),
                           onLongPress: () {
-                            showModalBottomSheet<void>(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Container(
-                                  height: 170,
-                                  padding: const EdgeInsets.all(4),
-                                  child: ListView(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(child: Text(schoolRoom.name!)),
-                                      ),
-                                      ListTile(
-                                        title: const Text('Editar'),
-                                        leading: const Icon(Icons.edit),
-                                        onTap: () async {
-                                          currentName.text = schoolRoom.name!;
-                                          customShowAddDialog(
-                                            
-            content: TextField(
-              controller: currentName,
-            ),
-              
-            context: context,
-            onSaveAction: () async {
-                try {
-                // Llama al provider para agregar el aula
-                appRouter.pop();
-                schoolRoom.name = currentName.text;
-                await ref.read(editSchoolRoomProvider(schoolRoom.id!, schoolRoom).future);
-                name.clear();
-                
-                
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Aula actualizada correctamente'),
-                  duration: Duration(seconds: 3),
-                ));
-                
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error al agregar el aula: $e')),
-                );
-              }
-            },
-            title: 'Actualizar Aula'
-          );
-              }
-                                        
-                                      ),
-                                      ListTile(
-                                        title: const Text('Eliminar'),
-                                        leading: const Icon(Icons.delete),
-                                        onTap: () async{
-                                          appRouter.pop();
-                                          schoolRoom.name = currentName.text;
-                                          await ref.read(deleteSchoolRoomProvider(schoolRoom.id!,).future);
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                            );
-                          },
+                            
                         );
                       }
                     )
@@ -167,8 +245,4 @@ class AdminSchoolRoomListScreen extends ConsumerWidget {
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stackTrace) => Center(child: Text('Error: $error')),
-              ) */],
-          ),
-      ),);
-  }
-}
+              ) */

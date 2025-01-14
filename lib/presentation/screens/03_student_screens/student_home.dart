@@ -1,5 +1,5 @@
 import 'package:asistencia_jaguar/config/routes/my_router.dart';
-import 'package:asistencia_jaguar/data/services/remote/groups_api.dart';
+import 'package:asistencia_jaguar/data/services/remote/02_course_services/groups_api.dart';
 import 'package:asistencia_jaguar/data/sources/user_prefreferences.dart';
 import 'package:asistencia_jaguar/presentation/providers/dark_mode/dark_mode.dart';
 import 'package:asistencia_jaguar/widgets/widgets.dart';

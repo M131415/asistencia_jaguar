@@ -12,7 +12,13 @@ class AppTheme {
     useMaterial3: true,
     brightness: isDarkmode ? Brightness.dark : Brightness.light,
     colorSchemeSeed: const Color.fromARGB(255, 0, 68, 169),
-    
+    cardTheme: CardTheme(
+      color: isDarkmode ? const Color.fromARGB(255, 0, 8, 72) : const Color.fromARGB(234, 98, 106, 255),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+    ),
   );
 
 }

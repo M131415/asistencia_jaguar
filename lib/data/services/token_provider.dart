@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:asistencia_jaguar/data/http_request_failure.dart';
-import 'package:asistencia_jaguar/data/services/remote/refresh_token_api.dart';
+import 'package:asistencia_jaguar/data/services/remote/01_auth_services/refresh_token_api.dart';
 import 'package:asistencia_jaguar/data/sources/user_prefreferences.dart';
 
 class TokenProvider {

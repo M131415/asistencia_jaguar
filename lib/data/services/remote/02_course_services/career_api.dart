@@ -4,6 +4,7 @@ import 'package:asistencia_jaguar/config/endpoints/enpoints.dart';
 import 'package:asistencia_jaguar/data/either.dart';
 import 'package:asistencia_jaguar/data/http_request_failure.dart';
 import 'package:asistencia_jaguar/data/models/career_model.dart';
+import 'package:asistencia_jaguar/data/services/remote/catch_errors/catch_errors.dart';
 import 'package:asistencia_jaguar/data/services/token_provider.dart';
 import 'package:asistencia_jaguar/data/typedefs.dart';
 import 'package:dio/dio.dart';
@@ -27,8 +28,8 @@ class CareerService {
         },
       );
     } catch (e) {
-      log('Error obteniendo token: $e');
-      throw HttpRequestFailure.unauthorized;
+      final error = cathError(e);
+      throw error;
     }
   }
 
@@ -45,7 +46,7 @@ class CareerService {
         return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      final error = _cathError(e);
+      final error = cathError(e);
       return Either.left(error);
     }
   }
@@ -63,7 +64,7 @@ class CareerService {
         return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      final error = _cathError(e);
+      final error = cathError(e);
       return Either.left(error);
     }
   }
@@ -83,7 +84,7 @@ class CareerService {
         return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      final error = _cathError(e);
+      final error = cathError(e);
       return Either.left(error);
     }
   }
@@ -102,29 +103,8 @@ class CareerService {
         return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {
-      final error = _cathError(e);
+      final error = cathError(e);
       return Either.left(error);
     }
-  }
-  // Catch error
-  HttpRequestFailure _cathError(e) {
-    log('Errors: $e');
-    late HttpRequestFailure failure;
-    if (e is DioException) {
-      final statusCode = e.response?.statusCode;
-      if (statusCode != null) {
-        for (final status in HttpRequestFailure.values) {
-          if (statusCode == status.statusCode) {
-            return status;
-          }
-        }
-      }
-      failure = HttpRequestFailure.network;
-    } else if (e is HttpRequestFailure) {
-      failure = e;
-    } else {
-      failure = HttpRequestFailure.unknown;
-    }
-    return failure;
   }
 }
