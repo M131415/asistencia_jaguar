@@ -25,48 +25,43 @@ class AdminPanelScreen extends ConsumerWidget {
           CustomButtom(
             icon: Icons.person_3, 
             label: 'Usuarios', 
-            onPressed: () {},
+            onPressed: () => appRouter.pushNamed(Routes.adminUserList.name),
           ),
 
           const SizedBox(height: 30,),
           const Text('Información sobre los Cursos'),
           const SizedBox(height: 10,),
 
-          Row(
+          GridView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 2, // This will make each child 200x100 (2:1 ratio)
+            ),
             children: [
               CustomButtom(
-            icon: Icons.pending_actions_outlined, 
-            label: 'Cursos', 
-            onPressed: () {},
-          ),
-          
-          CustomButtom(
-            icon: Icons.people_rounded, 
-            label: 'Grupos de Clases', 
-            onPressed: () {},
-          ),
-            ],
-          ),
-
-          Row(
-            children: [
+                icon: Icons.pending_actions_outlined, 
+                label: 'Cursos', 
+                onPressed: () {},
+              ),
+              CustomButtom(
+                icon: Icons.people_rounded, 
+                label: 'Grupos de Clases', 
+                onPressed: () {},
+              ),
               CustomButtom(
                 icon: Icons.room_rounded, 
                 label: 'Aulas', 
-                onPressed: () {
-                  appRouter.pushNamed(Routes.adminSchoolRoomList.name);
-                },
+                onPressed: () => appRouter.pushNamed(Routes.adminSchoolRoomList.name),
               ),
               CustomButtom(
                 icon: Icons.calendar_month_rounded, 
                 label: 'Periodos', 
                 onPressed: () {},
               ),
-            ],
-          ),
-
-          Row(
-            children: [
               CustomButtom(
                 icon: Icons.book_rounded, 
                 label: 'Materias', 
@@ -77,14 +72,10 @@ class AdminPanelScreen extends ConsumerWidget {
                 label: 'Departamentos', 
                 onPressed: () {},
               ),
-            ],
-          ),
-          Row(
-            children: [
               CustomButtom(
                 icon: Icons.school_rounded, 
                 label: 'Carreras', 
-                onPressed: () { appRouter.pushNamed(Routes.adminCareerList.name);},
+                onPressed: () => appRouter.pushNamed(Routes.adminCareerList.name),
               ),
             ],
           ),

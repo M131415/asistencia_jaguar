@@ -4,28 +4,45 @@ import 'package:flutter/material.dart';
 class ProfileImage extends StatelessWidget {
 
   final String imageUrl;
+  final String? name;
   
   const ProfileImage({
     required this.imageUrl,
+    this.name,
     super.key
   });
 
   @override
   Widget build(BuildContext context) {
-    return imageUrl.isNotEmpty
-    ? CircleAvatar(
-      backgroundColor: Colors.grey[200], // Color de fondo opcional
+
+    final url = Enpoints.baseApiURL + imageUrl;
+
+    return CircleAvatar(
       child: ClipOval(
-        child: Image.network(
-          '${Enpoints.baseApiURL}$imageUrl', // URL de la imagen
-          width: 100, // Ancho de la imagen
-          height: 100, // Alto de la imagen
-          fit: BoxFit.cover, // Ajusta la imagen para cubrir el espacio
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.person); // Icono por defecto si hay error
-          },
-        ),
+        child: imageUrl.isNotEmpty
+          ? Image.network(
+              url,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.error,
+                color: Colors.red,
+              ),
+            )
+            : name != null && name!.isNotEmpty
+              ? FittedBox(
+                  fit: BoxFit.contain,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      name![0].toUpperCase(),
+                      style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                  ),
+                )
+              : const Icon(
+                Icons.account_circle, 
+                ),
       ),
-    ) : const Icon(Icons.account_circle);
+    );  
   }
 }

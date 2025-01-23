@@ -22,6 +22,9 @@ Future<void> customShowAddDialog({
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(), 
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).buttonTheme.colorScheme?.onSecondary
+            ),
             child: const Text('Cancelar')
           ),
         ],

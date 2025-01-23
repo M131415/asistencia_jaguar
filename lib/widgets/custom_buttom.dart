@@ -15,8 +15,7 @@ class CustomButtom extends StatelessWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      margin: const EdgeInsets.all(8),
+    return SizedBox(
       height: height ?? 80,
       width: width ?? 160,
       child: ElevatedButton.icon(

@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
 class TextInput extends StatefulWidget {
-  final IconData icon;
+  final IconData? icon;
   final String title;
   final String placeholder;
   final TextEditingController controller;
   final TextInputType keyboard;
   final bool isPassword;
+  final int? maxLength;
+  final bool isRequired;
 
   const TextInput({
     super.key, 
-    required this.icon, 
+    this.icon, 
     required this.title,
     required this.placeholder, 
     required this.controller, 
     this.keyboard = TextInputType.text, 
     this.isPassword = false,
+    this.isRequired = true,
+    this.maxLength
   });
 
   @override
@@ -58,8 +62,9 @@ class _TextInputState extends State<TextInput> {
             ]
           ),
           child: TextFormField(
-            validator: _validatorText,
+            validator: widget.isRequired ? _validatorText : null,
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            maxLength: widget.maxLength,
             keyboardType: widget.keyboard,
             controller: widget.controller,
             obscureText: widget.isPassword ? _showPassword : false,
@@ -67,7 +72,9 @@ class _TextInputState extends State<TextInput> {
               contentPadding: const EdgeInsets.only(top: 10),
               focusedBorder: InputBorder.none,
               border: InputBorder.none,
-              prefixIcon: Icon(widget.icon),
+              prefixIcon: widget.icon != null 
+                ? Icon(widget.icon)
+                : null,
               suffixIcon: widget.isPassword 
                 ? IconButton(
                     icon: Icon(

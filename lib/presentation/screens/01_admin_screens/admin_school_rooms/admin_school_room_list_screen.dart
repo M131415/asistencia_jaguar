@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:asistencia_jaguar/config/routes/my_router.dart';
 import 'package:asistencia_jaguar/data/models/school_room_model.dart';
 import 'package:asistencia_jaguar/presentation/providers/school_room_p/school_room_provider.dart';
+import 'package:asistencia_jaguar/presentation/screens/screens.dart';
 import 'package:asistencia_jaguar/widgets/custom_show_add_dialog.dart';
+import 'package:asistencia_jaguar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,239 +14,213 @@ class AdminSchoolRoomListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final appRouter = ref.watch(appRouterProvider);
+    
     final nameController = TextEditingController();
-    final colorScheme = Theme.of(context).colorScheme;
     final currentNameController = TextEditingController();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Aulas'),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          customShowAddDialog(
-            content: TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre del aula',
+    return ref.watch(schoolRoomStateProvider).when(
+      data: (schoolRooms) {
+        if (schoolRooms.isEmpty) {
+          return EmptyPage(
+            title: 'Aulas',
+            message: 'No hay aulas registradas, agrega una',
+            icon: Icons.business_sharp,
+            onPressed: () => _showAddRoomDialog(context, ref, nameController),
+            buttonText: 'Agregar Nueva Aula',
+          );
+        }
+
+        return SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Aulas'),
+            ),
+            body: GridView.builder(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: schoolRooms.length,
+              itemBuilder: (context, index) => _buildRoomCard(
+                context, 
+                ref, 
+                schoolRooms[index], 
+                currentNameController,
+                Theme.of(context).colorScheme,
               ),
             ),
-              
-            context: context,
-            onSaveAction: () async{
-              final newSchoolRoom = SchoolRoomModel(id: 0, name: nameController.text);
-              // Llama al provider para agregar el aula
-              final result = await ref.read(schoolRoomStateProvider.notifier).createSchoolRoom(newSchoolRoom);
-              
-              if (result) {
-                appRouter.pop();
-                if (context.mounted){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Aula agregada correctamente'),
-                      duration: Duration(seconds: 3),
-                    )
-                  );
-                }
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () => _showAddRoomDialog(context, ref, nameController),
+              icon: const Icon(Icons.room_rounded),
+              label: const Text('Agregar Aula'),
+            ),
+          ),
+        );
+      },
+      loading: () => const LoadingPage(),
+      error: (error, stack) => ErrorPage(message: error.toString()),
+    );
+  }
+
+  // Métodos auxiliares aquí...
+  void _showAddRoomDialog(BuildContext context, WidgetRef ref, TextEditingController controller) {
+    // Tu código actual para mostrar el diálogo de agregar
+    customShowAddDialog(
+      content: TextField(
+        controller: controller,
+        decoration: const InputDecoration(
+          labelText: 'Nombre del aula',
+        ),
+      ),
+      context: context,
+      onSaveAction: () async {
+        final appRouter = ref.watch(appRouterProvider);
+        final newSchoolRoom = SchoolRoomModel(id: 0, name: controller.text);
+        final result = await ref.read(schoolRoomStateProvider.notifier)
+            .createSchoolRoom(newSchoolRoom);
+        if (result) {
+          appRouter.pop();
+        }
+        if (context.mounted) {
+          _handleResult(context, ref, result, 'agregada');
+        } else {
+          log('El contexto no está montado');
+        }
+      },
+      title: 'Agregar Aula'
+    );
+  }
+
+  Widget _buildRoomCard(BuildContext context, WidgetRef ref, 
+      SchoolRoomModel room, TextEditingController controller, ColorScheme colorScheme) {
+    return GestureDetector(
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.onPrimary,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromARGB(72, 100, 141, 153),
+              blurRadius: 4.0,
+              offset: Offset(2, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.business_outlined, size: 35),
+            const SizedBox(height: 10),
+            Text(
+              room.name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+              ),
+            ),
+          ],
+        ),
+      ),
+      onLongPress: () => _showBottomSheet(context, ref, room, controller),
+    );
+  }
+
+  void _showBottomSheet(BuildContext context, WidgetRef ref, 
+      SchoolRoomModel room, TextEditingController controller) {
+    // Tu código actual para mostrar el bottom sheet
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) => _buildBottomSheetContent(
+        context, ref, room, controller
+      ),
+    );
+  }
+
+  Widget _buildBottomSheetContent(BuildContext context, WidgetRef ref, 
+      SchoolRoomModel room, TextEditingController controller) {
+    final appRouter = ref.watch(appRouterProvider);
+    return Container(
+      height: 170,
+      padding: const EdgeInsets.all(4),
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: Text(room.name)),
+          ),
+          ListTile(
+            title: const Text('Editar'),
+            leading: const Icon(Icons.edit),
+            onTap: () {
+              appRouter.pop();
+              _showEditDialog(context, ref, room, controller);
+            },
+          ),
+          ListTile(
+            title: const Text('Eliminar'),
+            leading: const Icon(Icons.delete),
+            onTap: () async {
+              final result = await ref.read(schoolRoomStateProvider.notifier)
+                  .deleteSchoolRoom(room.id);
+              appRouter.pop();
+              if (context.mounted) {
+                _handleResult(context, ref, result, 'eliminada');
               } else {
-                if (context.mounted){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Error al agregar el aula'),
-                      duration: Duration(seconds: 3),
-                    )
-                  );
-                }
+                log('El contexto no está montado al eliminar un aula');
               }
             },
-            title: 'Agregar Aula'
-          );
-          
-        }, 
-        icon: const Icon(Icons.room_rounded),
-        label: const Text('Agregar Aula')
+          ),
+        ],
       ),
-      body: ref.watch(schoolRoomStateProvider).when(
-        data: (schoolRooms) => GridView.builder(
-          padding: const EdgeInsets.all(10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: schoolRooms.length,
-          itemBuilder: (context, index) => GestureDetector(
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.onPrimary,
-                borderRadius: BorderRadius.circular(12.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color.fromARGB(72, 100, 141, 153),
-                    blurRadius: 4.0,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.business_outlined,
-                    size: 35,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    schoolRooms[index].name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                    ),
-                  ),
-              ],
-              ),
-            ),
-            onLongPress: () {
-              showModalBottomSheet<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                    height: 170,
-                    padding: const EdgeInsets.all(4),
-                    child: ListView(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(child: Text(schoolRooms[index].name)),
-                        ),
-                        ListTile(
-                          title: const Text('Editar'),
-                          leading: const Icon(Icons.edit),
-                          onTap: () async {
-                            currentNameController.text = schoolRooms[index].name;
-                            customShowAddDialog(
-                              content: TextField(
-                                controller: currentNameController,
-                              ),
-                              context: context,
-                              onSaveAction: () async {
-                                 // Llama al provider para actualizar el aula
-                                  final result = await ref.read(schoolRoomStateProvider.notifier).updateSchoolRoom(
-                                    schoolRooms[index].id,
-                                    SchoolRoomModel(id: schoolRooms[index].id, name: currentNameController.text)
-                                  );
-                                  appRouter.pop();
-                                  if (result) {
-                                    if (context.mounted){
-                                      appRouter.pop();
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Aula actualizada correctamente'),
-                                          duration: Duration(seconds: 3),
-                                        )
-                                      );
-                                    }
-                                  } else {
-                                    if (context.mounted){
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Error al actualizar el aula'),
-                                          duration: Duration(seconds: 3),
-                                        )
-                                      );
-                                    }
-                                  }
-                                  
-                              },
-                              title: 'Actualizar Aula'
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Eliminar'),
-                          leading: const Icon(Icons.delete),
-                          onTap: () async {
-                            final result =  await ref.read(schoolRoomStateProvider.notifier).deleteSchoolRoom(schoolRooms[index].id);
-                            appRouter.pop();
-                            if (result) {
-                              if (context.mounted){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Aula eliminada correctamente'),
-                                    duration: Duration(seconds: 3),
-                                  )
-                                );
-                              }
-                            } else {
-                              if (context.mounted){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Error al eliminar el aula'),
-                                    duration: Duration(seconds: 3),
-                                  )
-                                );
-                              }
-                            }
-                          },
-                        )
-                      ],
-                    ),
-                  );
-                }
-              );
-            },
-          ),
+    );
+  }
+
+  void _handleResult(BuildContext context, WidgetRef ref, 
+      bool result, String action) {
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result 
+          ? 'Aula $action correctamente' 
+          : 'Error al ${action.split(' ')[0]} el aula'),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, WidgetRef ref, 
+      SchoolRoomModel room, TextEditingController controller) {
+
+    controller.text = room.name;
+    final appRouter = ref.watch(appRouterProvider);
+
+    customShowAddDialog(
+      content: TextField(
+        controller: controller,
+        decoration: const InputDecoration(
+          labelText: 'Nombre del aula',
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
-      )
+      ),
+      context: context,
+      onSaveAction: () async {
+        final updatedRoom = room.copyWith(name: controller.text);
+        final result = await ref.read(schoolRoomStateProvider.notifier)
+            .updateSchoolRoom(room.id, updatedRoom);
+        if (result) {
+          appRouter.pop();
+        }
+        if (context.mounted) {
+          _handleResult(context, ref, result, 'actualizada');
+        } else {
+          log('El contexto no está montado');
+        }
+      },
+      title: 'Editar Aula'
     );
   }
 }
-
-/* schoolRooms.when(
-              data: (schoolRooms) => Flexible(
-                child: CustomScrollView(
-                  slivers: <Widget>[
-              
-                    SliverGrid.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        mainAxisExtent: 70,
-                        maxCrossAxisExtent: 70,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                      ),
-                      
-                      itemCount: schoolRooms.length,
-                      itemBuilder: (context, index) {
-
-                        SchoolRoom schoolRoom = schoolRooms[index];
-
-                        return GestureDetector(
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              schoolRoom.name!, 
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary
-                              ),
-                            )
-                          ),
-                          onLongPress: () {
-                            
-                        );
-                      }
-                    )
-                  ],
-                ),
-              ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) => Center(child: Text('Error: $error')),
-              ) */
