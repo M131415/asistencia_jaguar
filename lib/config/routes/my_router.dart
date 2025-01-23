@@ -117,7 +117,7 @@ GoRouter appRouter(AppRouterRef ref) {
                         builder: (context, state) {
                           final id = state.extra as int;
                           log('User id: $id');
-                          return UserRetrieveScreen(userId: id);
+                          return UserDetailScreen(userId: id);
                         },
                         routes: [
                           GoRoute(

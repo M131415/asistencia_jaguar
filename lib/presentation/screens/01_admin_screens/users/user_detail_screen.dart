@@ -10,8 +10,8 @@ import 'package:asistencia_jaguar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UserRetrieveScreen extends ConsumerWidget {
-  const UserRetrieveScreen({super.key, this.userId});
+class UserDetailScreen extends ConsumerWidget {
+  const UserDetailScreen({super.key, this.userId});
 
   final int? userId;
 
