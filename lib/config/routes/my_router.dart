@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:asistencia_jaguar/config/routes/scaffold_with_nav_bar.dart';
 import 'package:asistencia_jaguar/data/models/career_model.dart';
 import 'package:asistencia_jaguar/data/sources/user_prefreferences.dart';
+import 'package:asistencia_jaguar/domain/entities.dart';
 import 'package:asistencia_jaguar/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +21,11 @@ enum Routes {
   adminCareerList,
   adminCareer,
   adminSchoolRoomList,
+  adminUserList,
+  adminUserRetrieve,
+  adminUserForm,
+  adminUserUpdate,
+  adminUserListFromCSV,
   adminReports,
   teacherHome,
   teacherCourseList,
@@ -92,6 +98,40 @@ GoRouter appRouter(AppRouterRef ref) {
                     path: Routes.adminSchoolRoomList.name,
                     name: Routes.adminSchoolRoomList.name,
                     builder: (context, state) => const AdminSchoolRoomListScreen(),
+                  ),
+                  GoRoute(
+                    path: Routes.adminUserList.name,
+                    name: Routes.adminUserList.name,
+                    builder: (context, state) => const UserListScreen(),
+                    routes: [
+                      GoRoute(
+                        path: Routes.adminUserForm.name, 
+                        name: Routes.adminUserForm.name,
+                        builder: (context, state) => const UserFormScreen(),
+                        
+                      ),
+                      GoRoute(
+                        
+                        path: Routes.adminUserRetrieve.name,
+                        name: Routes.adminUserRetrieve.name,
+                        builder: (context, state) {
+                          final id = state.extra as int;
+                          log('User id: $id');
+                          return UserRetrieveScreen(userId: id);
+                        },
+                        routes: [
+                          GoRoute(
+                            path: Routes.adminUserUpdate.name,
+                            name: Routes.adminUserUpdate.name,
+                            builder: (context, state) {
+                              final User user = state.extra as User;
+                              return UserFormScreen(user: user);
+                            },
+                          ),
+                        ]
+                      ),
+                      
+                    ]
                   ),
                 ]
               ),
