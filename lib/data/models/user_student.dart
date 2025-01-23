@@ -27,24 +27,27 @@ class UserStudent extends User {
       lastName: json['last_name'] as String,
       email: json['email'] as String,
       image: json['image'] as String,
-      rol: json['rol'] as UserRol,
+      rol: UserRol.fromString(json['rol']),
     );
 
   // Método para convertir la instancia en un mapa JSON
   Json toJson() {
     return {
       'username': username,
+      'password': username,
       'name': name,
       'last_name': lastName,
       'email': email,
-      'image': image,
       'rol': rol.name.toUpperCase(),
-      'teacher_profile': studentProfile.id,
+      'student_profile': {
+        'career': studentProfile.carrer.id,
+      },
     };
   }
 
-  factory UserStudent.fromCsvRow(List<dynamic> csvRow) 
-    => UserStudent.fromJson({
+  factory UserStudent.fromCsvRow(List<dynamic> csvRow) { 
+    
+    return UserStudent.fromJson({
       "id": 0,
       "username" : csvRow[0].toString(),
       "name": csvRow[1].toString(),
@@ -52,9 +55,18 @@ class UserStudent extends User {
       "email": csvRow[3].toString(),
       "image": "",
       "rol": UserRol.student.toJson(),
-      "student_profile": int.parse(csvRow[4].toString()),
+      "student_profile": {
+        "career": CareerModel.fromJson({
+          "id": csvRow[4].toString(),
+          "code": "",
+          "name": "",
+          "short_name": "",
+          "specialty": "",
+        }),
+      },
       }
     );
+  }
   
   static List<UserStudent> fromCsvTable(List<List<dynamic>> csvTable) {
     return csvTable.skip(1).map((csvRow) 
@@ -77,7 +89,7 @@ class StudentProfile {
   // Constructor para crear una instancia desde un mapa JSON
   StudentProfile.fromJson(Json json) : 
     id = json['id'] as int,
-    carrer = CareerModel.fromJson(json['carrer'] as Json);
+    carrer = CareerModel.fromJson(json['career'] as Json);
 
   // Método para convertir la instancia en un mapa JSON
   Json toJson() {
