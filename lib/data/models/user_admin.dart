@@ -27,10 +27,11 @@ class UserAdmin extends User{
   Json toJson() {
     return {
       'username': username,
+      'password': username,
       'name': name,
       'last_name': lastName,
       'email': email,
-      'image': image,
+      //'image': image,
       'rol': rol.toJson(),
     };
   }
