@@ -32,12 +32,15 @@ class UserTeacher extends User {
   Json toJson() {
     return {
       'username': username,
+      'password': username,
       'name': name,
       'last_name': lastName,
       'email': email,
-      'image': image,
+      //'image': image,
       'rol': rol.toJson(),
-      'teacher_profile': teacherProfile.id,
+      'teacher_profile': {
+        'degree': teacherProfile.degree,
+      },
     };
   }
 
