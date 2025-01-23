@@ -20,4 +20,15 @@ class SchoolRoomModel extends SchoolRoom{
       'name': name,
     };
   }
+
+  // Método para clonar la instancia
+  SchoolRoomModel copyWith({
+    int? id,
+    String? name,
+  }) {
+    return SchoolRoomModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
 }
