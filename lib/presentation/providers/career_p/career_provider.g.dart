@@ -6,7 +6,7 @@ part of 'career_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$careerStateHash() => r'1dfcb8a9b7f7ec1fa2d3f44ad9320b6f079fa8af';
+String _$careerStateHash() => r'f03ba728570042f2ba8073ba8cb8aa7f93547b91';
 
 /// See also [CareerState].
 @ProviderFor(CareerState)

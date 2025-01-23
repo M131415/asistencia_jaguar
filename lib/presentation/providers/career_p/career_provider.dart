@@ -21,6 +21,15 @@ class CareerState extends _$CareerState {
     );
   }
 
+  // Get a career by id
+  Future<CareerModel> getCareerById(int id) async {
+    final response = await _careerService.getCareerById(id);
+    return response.when(
+      left: (failure) => throw Exception(failure.message),
+      right: (career) => career,
+    );
+  }
+
   Future<bool> createCareer(CareerModel career) async {
     state = const AsyncLoading();
     final result = await _careerService.createCareer(career);
