@@ -10,6 +10,7 @@ import 'package:asistencia_jaguar/data/typedefs.dart';
 import 'package:dio/dio.dart';
 
 typedef CareerListFuture = FutureEither<HttpRequestFailure, List<CareerModel>>;
+typedef CareerRetrieveFuture = FutureEither<HttpRequestFailure, CareerModel>;
 typedef CareerFuture = FutureEither<HttpRequestFailure, bool>;
 
 class CareerService {
@@ -42,6 +43,24 @@ class CareerService {
         List<dynamic> data = response.data['results'];
         final careerList = data.map((json) => CareerModel.fromJson(json)).toList();
         return Either.right(careerList);
+      } else {
+        return Either.left(HttpRequestFailure.unknown);
+      }
+    } catch (e) {
+      final error = cathError(e);
+      return Either.left(error);
+    }
+  }
+
+  // Get a Career by id
+  CareerRetrieveFuture getCareerById(int id) async {
+    try {
+      final options = await _getOptions();
+      final response = await _dio.get('$_url$id/', options: options);
+
+      if (response.statusCode == 200) {
+        final career = CareerModel.fromJson(response.data);
+        return Either.right(career);
       } else {
         return Either.left(HttpRequestFailure.unknown);
       }
