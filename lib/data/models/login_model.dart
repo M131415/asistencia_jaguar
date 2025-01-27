@@ -21,5 +21,10 @@ class LoginModel {
       message: json['message'],
     );
   }
+
+  @override
+  String toString() {
+    return 'LoginModel(token: $token, refreshToken: $refreshToken, user: $user, message: $message)';
+  }
   
 }

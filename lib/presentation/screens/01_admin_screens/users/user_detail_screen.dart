@@ -95,7 +95,7 @@ class UserDetailScreen extends ConsumerWidget {
                         height: 100,
                         width: 100,
                         child: ProfileImage(
-                          imageUrl: user.image,
+                          imageUrl: user.image ?? '',
                           name: user.name,
                         ),
                       ),

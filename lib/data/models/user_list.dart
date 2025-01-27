@@ -34,4 +34,9 @@ class UserList extends User{
     'rol': rol.toJson(),
   };
 
+  @override
+  String toString() {
+    return 'UserList(id: $id, username: $username, name: $name, lastName: $lastName, email: $email, image: $image, rol: $rol)';
+  }
+
 }

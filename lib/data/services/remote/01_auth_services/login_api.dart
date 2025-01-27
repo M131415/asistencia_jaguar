@@ -75,6 +75,7 @@ class LoginService {
       pref.saveUser(login.user);
       _saveDefaultRouteByRol(login.user.rol, pref);
       log('Login data saved');
+      log('LoginModel: $login');
       return true;
     } catch (e) {
       log('Error saving login data: $e');

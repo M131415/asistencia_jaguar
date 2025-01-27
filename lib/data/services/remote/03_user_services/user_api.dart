@@ -13,9 +13,10 @@ import 'package:asistencia_jaguar/data/typedefs.dart';
 import 'package:asistencia_jaguar/domain/entities/user.dart';
 import 'package:dio/dio.dart';
 
-typedef UserListFuture     = FutureEither<HttpRequestFailure, List<UserList>>;
-typedef UserRetrieveFuture = FutureEither<HttpRequestFailure, User>;
-typedef UserFuture         = FutureEither<HttpRequestFailure, bool>;
+typedef UserListFuture        = FutureEither<HttpRequestFailure, List<UserList>>;
+typedef UserStudentListFuture = FutureEither<HttpRequestFailure, List<UserStudent>>;
+typedef UserRetrieveFuture    = FutureEither<HttpRequestFailure, User>;
+typedef UserFuture            = FutureEither<HttpRequestFailure, bool>;
 
 class UserService {
 
@@ -124,6 +125,44 @@ class UserService {
         log('SchoolRoom created successfully.');
         return Either.right(true);
       } else {
+        return Either.left(HttpRequestFailure.unknown);
+      }
+    } catch (e) {
+      final error = cathError(e);
+      return Either.left(error);
+    }
+  }
+
+  // Create a new List of Users type Student
+  UserStudentListFuture createUserStudentList(List<UserStudentCreate> users) async {
+    try {
+      final options = await _getOptions();
+      final data = users.map((user) => user.toJson()).toList();
+      final url = '${_url}create_from_list/';
+      final response = await _dio.post(url, options: options, data: data);
+
+      if (response.statusCode == 201) {
+        log('Todos los usuarios se crearon correctamente.');
+        final List<dynamic> data = response.data['created_users'];
+        final users = data.map((json) => UserStudent.fromJson(json)).toList();
+        return Either.right(users);
+
+      } else if (response.statusCode == 207) {
+        final List<dynamic> users = response.data['created_users'];
+        if (users.isNotEmpty) {
+          log('usuarios creados: $users');
+          log(users.toString());
+          final userList = users.map((json) => UserStudent.fromJson(json)).toList();
+          return Either.right(userList);
+
+        } else {
+          final error = response.data['errors'];
+          log('Errores al crear usuarios: $error');
+          return Either.left(HttpRequestFailure.unknown);
+
+        }
+      } else {
+        log('Error desconocido ${response.data}');
         return Either.left(HttpRequestFailure.unknown);
       }
     } catch (e) {

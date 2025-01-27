@@ -25,7 +25,7 @@ class StudentHomeScreen extends ConsumerWidget {
     } else {
       final user = userPref.getUser();
       name = user!.name;
-      imageUrl = user.image;
+      imageUrl = user.image ?? '';
     }
     
 

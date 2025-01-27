@@ -73,7 +73,11 @@ class _UserFormCreateScreenState extends ConsumerState<UserFormScreen> {
           : [
               IconButton(
                 icon: const Icon(Icons.group_add_rounded),
-                onPressed: () {}
+                onPressed: () {
+                  appRouter.pushNamed(
+                    Routes.adminUserListFromCSV.name
+                  );
+                }
               ),
             ]
           

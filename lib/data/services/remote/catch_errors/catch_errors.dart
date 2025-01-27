@@ -7,6 +7,7 @@ HttpRequestFailure cathError(dynamic e) {
     log('Errores desde catchError: ${e.runtimeType}');
     late HttpRequestFailure failure;
     if (e is DioException) {
+      log(e.response!.statusCode.toString());
       final statusCode = e.response?.statusCode;
       if (statusCode != null) {
         for (final status in HttpRequestFailure.values) {
@@ -18,7 +19,7 @@ HttpRequestFailure cathError(dynamic e) {
       failure = HttpRequestFailure.network;
     } else if (e is HttpRequestFailure) {
       failure = e;
-      log(failure.statusCode.toString());
+      log(failure.message);
     } else {
       failure = HttpRequestFailure.unknown;
     }

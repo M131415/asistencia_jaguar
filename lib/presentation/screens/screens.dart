@@ -6,10 +6,10 @@ export '01_admin_screens/admin_home_screen.dart';
 export '01_admin_screens/admin_panel_screen.dart';
 export '01_admin_screens/admin_reports_screen.dart';
 export '01_admin_screens/admin_school_rooms/admin_school_room_list_screen.dart';
+export '01_admin_screens/users/user_detail_screen.dart';
 export '01_admin_screens/users/user_form_screen.dart';
 export '01_admin_screens/users/user_list_from_csv_screen.dart';
 export '01_admin_screens/users/user_list_screen.dart';
-export '01_admin_screens/users/user_retrieve_screen.dart';
 // Pantallas para el 
 // usuario docente
 export '02_teacher_screens/teacher_courses/teacher_course_list_screen.dart';

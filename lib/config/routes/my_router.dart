@@ -108,7 +108,13 @@ GoRouter appRouter(AppRouterRef ref) {
                         path: Routes.adminUserForm.name, 
                         name: Routes.adminUserForm.name,
                         builder: (context, state) => const UserFormScreen(),
-                        
+                        routes: [
+                          GoRoute(
+                            path: Routes.adminUserListFromCSV.name,
+                            name: Routes.adminUserListFromCSV.name,
+                            builder: (context, state) => const UserListFromCSV(),
+                          ),
+                        ]
                       ),
                       GoRoute(
                         

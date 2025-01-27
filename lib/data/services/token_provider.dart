@@ -20,6 +20,8 @@ class TokenProvider {
     try {
       DateTime expirationDate = _getExpirationDate(token);
       log('Fecha de expiracion del token: ${expirationDate.toString()}');
+      // log('Fecha actual: ${DateTime.now().toString()}');
+      // log(expirationDate.isBefore(DateTime.now()).toString());
       if (expirationDate.isBefore(DateTime.now())) {
         // Esperar el nuevo token
         final newToken = await _refreshToken();
@@ -30,7 +32,7 @@ class TokenProvider {
       return token;
     } catch (e) {
       log('Error al procesar token: $e');
-      throw HttpRequestFailure.local;
+      throw HttpRequestFailure.unauthorized;
     }
   }
 

@@ -112,7 +112,7 @@ class UserListScreen extends ConsumerWidget {
                         ),
                       ),
                       child: ProfileImage(
-                        imageUrl: user.image, name: user.lastName),
+                        imageUrl: user.image ?? '', name: user.lastName),
                       ),
                       title: Text('${user.lastName} ${user.name}'),
                       subtitle: Text(user.email),
@@ -133,7 +133,9 @@ class UserListScreen extends ConsumerWidget {
         );
       },
       loading: () => const LoadingPage(),
-      error: (error, stack) => ErrorPage(message: error.toString()),
+      error: (error, stack) {
+        return ErrorPage(message: error.toString());
+      }
     );
   }
 }

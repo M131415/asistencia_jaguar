@@ -44,7 +44,7 @@ class User extends Equatable {
     required this.name,
     required this.lastName,
     required this.email,
-    required this.image,
+    this.image,
     required this.rol,
   });
 
@@ -53,9 +53,9 @@ class User extends Equatable {
   final String name;
   final String lastName;
   final String email;
-  final String image;
+  final String? image;
   final UserRol rol;
 
   @override
-  List<Object?> get props => [id, username, name, lastName, email, image, rol];
+  List<Object?> get props => [id, username, name, lastName, email, rol];
 }
